@@ -12,3 +12,4 @@ npm i
   - [https://ejs.co/](https://ejs.co/)
 - [gulp-sass](https://github.com/dlmanning/gulp-sass)
 - [browsersync](https://browsersync.io/)
+- [gulp.spritesmith](https://github.com/twolfson/gulp.spritesmith)

@@ -2,3 +2,15 @@ body {
   background: $basic_color;
   color: $point_color;
 }
+
+.sp_like {
+  @include sprite($like)
+}
+
+.sp_icon {
+  @include sprite($icon)
+}
+
+.sp_logo_naver {
+  @include sprite($logo_naver, $display: block)
+}

@@ -60,13 +60,15 @@
   background-size: $spritesheet-width/2 $spritesheet-height/2;
 }
 
-@mixin sprite($sprite) {
-  display: inline-block;
+@mixin sprite($sprite, $display: inline-block) {
+  display: $display;
   @include sprite-width($sprite);
   @include sprite-height($sprite);
   @include sprite-image($sprite);
   @include sprite-position($sprite);
-  vertical-align: top;
+  @if ($display == "inline-block") {
+    vertical-align: top;
+  }
 }
 
 @mixin sprites($sprites) {
