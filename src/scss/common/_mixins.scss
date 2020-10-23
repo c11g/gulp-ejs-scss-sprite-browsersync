@@ -1,0 +1,79 @@
+@mixin blind() {
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  margin: -1px;
+  width: 1px;
+  height: 1px;
+}
+
+@mixin clearfix() {
+  &::after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+}
+
+@mixin ellipsis($lines, $display: block) {
+  @if ($lines > 1) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+  } @else {
+    display: $display;
+    white-space: nowrap;
+  }
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+@mixin placeholder() {
+  &::-webkit-input-placeholder {
+    @content;
+  }
+  &:-ms-input-placeholder {
+    @content;
+  }
+}
+
+@mixin sprite-width($sprite) {
+  width: nth($sprite, 5)/2;
+}
+
+@mixin sprite-height($sprite) {
+  height: nth($sprite, 6)/2;
+}
+
+@mixin sprite-position($sprite) {
+  $sprite-offset-x: nth($sprite, 3);
+  $sprite-offset-y: nth($sprite, 4);
+  background-position: $sprite-offset-x/2  $sprite-offset-y/2;
+}
+
+@mixin sprite-image($sprite) {
+  $sprite-image: nth($sprite, 9);
+  background-image: url(../assets/#{$sprite-image});
+  background-size: $spritesheet-width/2 $spritesheet-height/2;
+}
+
+@mixin sprite($sprite) {
+  display: inline-block;
+  @include sprite-width($sprite);
+  @include sprite-height($sprite);
+  @include sprite-image($sprite);
+  @include sprite-position($sprite);
+  vertical-align: top;
+}
+
+@mixin sprites($sprites) {
+  @each $sprite in $sprites {
+    $sprite-name: nth($sprite, 10);
+    .#{$sprite-name} {
+      @include sprite($sprite);
+    }
+  }
+}
