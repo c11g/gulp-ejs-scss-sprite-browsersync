@@ -7,6 +7,11 @@ const sourcemaps = require("gulp-sourcemaps");
 const spritesmith = require("gulp.spritesmith");
 const merge = require("merge-stream");
 const browserSync = require("browser-sync").create();
+const generateIndxing = require("generate-index");
+const minifyHtml = require("gulp-html-minifier");
+const prettyHtml = require("gulp-pretty-html");
+const autoprefixer = require("gulp-autoprefixer");
+const babel = require("gulp-babel");
 
 const PATH = {
   ejs: "src/views",
@@ -75,8 +80,42 @@ const serve =  () => {
   watch(`${PATH.dist}/*.html`).on("change", browserSync.reload);
 }
 
-const build = series(clean, sprite, parallel(html, css, js), assets);
+const index = async () => {
+  await generateIndxing({
+    projectName: "Enter a Project Name",
+    author: "Enter a user name",
+    srcDir: `${PATH.dist}/`,
+    extention: ".html",
+    outFileName: "@index.html"
+  })
+}
 
-exports.clean = clean;
-exports.build = build;
-exports.default = series(build, serve);
+const prettier = async () => {
+  src(`${PATH.dist}/*.html`)
+  .pipe(await minifyHtml({
+    collapseWhitespace: true,
+    minifyCSS: true,
+  }))
+  .pipe(prettyHtml({
+    indent_size: 2,
+  }))
+  .pipe(dest(PATH.dist))
+}
+
+const cssPrefixer = () =>
+  src(`${PATH.dist}/css/*.css`)
+  .pipe(autoprefixer())
+  .pipe(dest(`${PATH.dist}/css`))
+
+const jsBable = () =>
+  src(`${PATH.dist}/js/script.js`)
+  .pipe(babel({
+    presets: ['@babel/preset-env']
+  }))
+  .pipe(dest(`${PATH.dist}/js`))
+
+  const dev = series(clean, sprite, parallel(html, css, js), assets);
+  const build = series(dev, parallel(cssPrefixer, jsBable), index, prettier);
+  
+  exports.build = build;
+  exports.default = series(dev, serve);
